@@ -1,0 +1,23 @@
+query Items($itemsId: String!, $name: String!, $lastName: String!) {
+  items(id: $itemsId, name: $name, lastName: $lastName) {
+    item {
+      id
+      title
+      price {
+        ...PriceInfoFields
+      }
+      thumbnail
+      condition
+      free_shipping
+      sold_quantity
+      description
+      pictures {
+        id
+        url
+      }
+    }
+    author {
+      ...AuthorInfoFields
+    }
+  }
+}

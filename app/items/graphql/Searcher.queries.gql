@@ -1,0 +1,75 @@
+query Searcher($name: String!, $lastName: String!, $search: String!) {
+  searcher(name: $name, lastName: $lastName, search: $search) {
+    author {
+      name
+      lastname
+    }
+    items {
+      id
+      title
+      price {
+        currency
+        amount
+        decimals
+      }
+      thumbnail
+      condition
+      free_shipping
+    }
+    categories
+  }
+}
+
+query SearcherPagination(
+  $search: String!
+  $name: String!
+  $lastName: String!
+  $limit: Int
+  $offset: Int
+) {
+  searcherPagination(
+    search: $search
+    name: $name
+    lastName: $lastName
+    limit: $limit
+    offset: $offset
+  ) {
+    author {
+      ...AuthorInfoFields
+    }
+    items {
+      id
+      title
+      price {
+        ...PriceInfoFields
+      }
+      thumbnail
+      condition
+      free_shipping
+    }
+    categories
+    pageInfo {
+      ...PaginationInfoFields
+    }
+  }
+}
+
+fragment PaginationInfoFields on PageInfo {
+  currentPage
+  perPage
+  totalPages
+  totalItems
+  hasPreviousPage
+  hasNextPage
+}
+
+fragment AuthorInfoFields on Author {
+  name
+  lastname
+}
+
+fragment PriceInfoFields on Price {
+  currency
+  amount
+  decimals
+}
