@@ -10,6 +10,7 @@ const Searcher: FC = () => {
   const [value, setValue] = useState('');
 
   const onSearch = () => {
+    if (!value) return;
     router.push(`/items?search=${value}`);
     setValue('');
   };

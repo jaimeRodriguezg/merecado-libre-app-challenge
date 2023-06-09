@@ -1,22 +1,85 @@
-'use client';
 import Image from 'next/image';
-import { BreadCrumbs, Button, Card, Error } from '../../components';
-import ProductLoading from '../../components/products/ProductLoading';
-import { Author } from '../../utils/autor';
+import { BreadCrumbs, Button, Card } from '../../components';
 import { format } from '../../utils/currency';
-import { useItemsQuery } from '../../../graphql/generated/schema';
+import { ItemsQuery } from '../../../graphql/generated/schema';
+import { condition } from '../../utils/condition';
+import { ConditionValueType } from '../../types/conditions.types';
 
-const Item = ({ params }: { params: { id: string } }) => {
-  const { data, loading, error } = useItemsQuery({
+import { gql } from '@apollo/client';
+import { getClient } from '../../lib/apollo';
+import { Metadata } from 'next';
+import { Author } from '@/app/utils/autor';
+import ProductLoading from '@/app/components/products/ProductLoading';
+
+const GET_QUERY = gql`
+  query Items($itemsId: String!, $name: String!, $lastName: String!) {
+    items(id: $itemsId, name: $name, lastName: $lastName) {
+      item {
+        id
+        title
+        price {
+          currency
+          amount
+          decimals
+        }
+        thumbnail
+        condition
+        free_shipping
+        sold_quantity
+        description
+        pictures {
+          id
+          url
+        }
+      }
+      author {
+        name
+        lastname
+      }
+    }
+  }
+`;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
+  const client = getClient();
+  const { data } = await client.query<ItemsQuery>({
+    query: GET_QUERY,
     variables: {
-      itemsId: params.id,
       name: Author.name,
       lastName: Author.lastName,
+      itemsId: params.id,
     },
   });
 
-  if (loading) return <ProductLoading />;
-  if (error) return <Error />;
+  const metadata: Metadata = {
+    title: data.items.item.title,
+    description: data.items.item.description,
+    authors: data.items.author,
+    keywords: data.items.item.title,
+
+    openGraph: {
+      images: data.items.item.pictures.map((img) => img.url),
+    },
+  };
+
+  return metadata;
+}
+
+const Item = async ({ params }: { params: { id: string } }) => {
+  const client = getClient();
+
+  const { data } = await client.query<ItemsQuery>({
+    query: GET_QUERY,
+    variables: {
+      name: Author.name,
+      lastName: Author.lastName,
+      itemsId: params.id,
+    },
+  });
 
   return (
     <div className="flex flex-col">
@@ -31,8 +94,8 @@ const Item = ({ params }: { params: { id: string } }) => {
               height={500}
             />
             <div className="flex flex-col gap-2">
-              <p className="text-xs text-gray-400">
-                {data?.items.item.condition}
+              <p className="text-sm text-gray-500">
+                {condition(data?.items.item.condition as ConditionValueType)}
               </p>
               <p className="text-lg font-semibold">{data?.items.item.title}</p>
               <p className="text-xl font-semibold">
@@ -43,7 +106,7 @@ const Item = ({ params }: { params: { id: string } }) => {
                   decimals: data?.items.item.price.decimals,
                 })}
               </p>
-              <Button>Comprar</Button>
+              <Button className="mt-5">Comprar</Button>
             </div>
           </div>
           <div className="mt-5">

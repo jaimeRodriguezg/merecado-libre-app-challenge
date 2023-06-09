@@ -4,6 +4,8 @@ import { GeneralItem } from '@/graphql/generated/schema';
 import { Button, Card } from '../ui';
 import { format } from '../../utils/currency';
 import { useRouter } from 'next/navigation';
+import { condition } from '../../utils/condition';
+import { ConditionValueType } from '@/app/types/conditions.types';
 
 interface CardProductProps {
   item: GeneralItem;
@@ -34,7 +36,9 @@ const CardProduct: FC<CardProductProps> = ({ item }) => {
               decimals: item.price.decimals,
             })}
           </p>
-          <p className="text-lg">{item?.condition}</p>
+          <p className="text-lg text-gray-500">
+            {condition(item?.condition as ConditionValueType)}
+          </p>
         </div>
       </div>
       <div className="flex flex-col align-midle justify-between p-4">
