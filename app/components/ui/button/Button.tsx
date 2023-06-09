@@ -1,5 +1,4 @@
 'use client';
-
 import { ButtonHTMLAttributes, FC, ReactElement } from 'react';
 
 type IconPosition = 'start' | 'end';

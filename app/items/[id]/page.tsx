@@ -1,10 +1,10 @@
 'use client';
-import { BreadCrumbs, Button, Card, Error } from '@/app/components';
-import ProductLoading from '@/app/components/products/ProductLoading';
-import { Author } from '@/app/utils/autor';
-import { format } from '@/app/utils/currency';
-import { useItemsQuery } from '@/graphql/generated/schema';
 import Image from 'next/image';
+import { BreadCrumbs, Button, Card, Error } from '../../components';
+import ProductLoading from '../../components/products/ProductLoading';
+import { Author } from '../../utils/autor';
+import { format } from '../../utils/currency';
+import { useItemsQuery } from '../../../graphql/generated/schema';
 
 const Item = ({ params }: { params: { id: string } }) => {
   const { data, loading, error } = useItemsQuery({

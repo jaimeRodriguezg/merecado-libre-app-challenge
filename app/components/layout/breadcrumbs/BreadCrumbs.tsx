@@ -2,7 +2,7 @@
 import { FC, useContext, useEffect } from 'react';
 import BreadCrumb from './BreadCrumb';
 import BreadCrumbDetail from './BreadCrumbDetail';
-import { BreadCrumbsContext } from '@/app/context/Breadcrumbs';
+import { BreadCrumbsContext } from '../../../context/Breadcrumbs';
 
 interface BreadCrumbProps {
   categories?: string[] | undefined;
